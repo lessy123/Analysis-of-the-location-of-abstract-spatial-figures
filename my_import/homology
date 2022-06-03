@@ -1,0 +1,31 @@
+import numpy as np
+from scipy.sparse import coo_matrix
+from gtda.homology import VietorisRipsPersistence
+
+points=np.array([[0.,0.],[1.,1.5],[2.,1.5],[3.,0],[2.,-1.5],[1.,-1.5]])
+print(points)
+print(points[0],points[0,1])
+
+new_points=np.copy(points)
+row  = []
+col  = []
+data = []
+x=-1
+while len(new_points):
+  x+=1
+  point=new_points[0]
+  new_points=new_points[1:]
+  y=x
+  for i in range(len(new_points)):
+    y+=1
+    row.append(str(x))
+    col.append(str(y))
+    data.append(((new_points[i,0]-point[0])**2+(new_points[i,1]-point[1])**2)**0.5)
+  print(point)
+print(row,col,data)
+
+coo = coo_matrix((data, (row, col)), shape=(6, 6))
+print(coo)
+
+persistent_diogram=VietorisRipsPersistence(metric="precomputed").fit_transform_plot([coo])
+print(persistent_diogram)
